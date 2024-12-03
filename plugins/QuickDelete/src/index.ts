@@ -1,5 +1,4 @@
 import { findByProps } from "@vendetta/metro";
-import { i18n } from "@vendetta/metro/common";
 import { instead } from "@vendetta/patcher";
 
 let unpatch;
@@ -8,7 +7,6 @@ export default {
     onLoad: () => {
         console.log("[Plugin] Chargement...");
 
-        // Recherche du composant Popup
         const Popup = findByProps("show", "openLazy");
         console.log("[Plugin] Popup trouvé :", Popup);
 
@@ -21,7 +19,8 @@ export default {
         unpatch = instead("show", Popup, (args, fn) => {
             console.log("[Plugin] Popup.show appelé avec les arguments :", args);
 
-            if (args?.[0]?.title === i18n.Messages.DELETE_MESSAGE) {
+            // Vérifie directement le titre
+            if (args?.[0]?.title === "Delete Message") {
                 console.log("[Plugin] Suppression de message détectée. Exécution de onConfirm.");
                 args[0].onConfirm?.();
             } else {
