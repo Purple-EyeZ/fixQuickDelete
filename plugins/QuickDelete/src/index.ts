@@ -1,41 +1,34 @@
 import { findByProps } from "@vendetta/metro";
+import intlProxy from "./intlProxy"; // Chemin vers le fichier avec le code ci-dessus
 import { instead } from "@vendetta/patcher";
 
 let unpatch;
 
 export default {
     onLoad: () => {
-        // Trouver l'objet intl
-        const intl = findByProps("t");
+        // Vérifiez si intlProxy est fonctionnel
+        const deleteMessageText = intlProxy["Delete Message"];
+        if (!deleteMessageText) {
+            console.error("[Plugin] Texte 'Delete Message' introuvable !");
+            return;
+        }
 
-        if (intl) {
-            console.log("[Plugin] Intl trouvé :", intl);
+        console.log(`[Plugin] Texte détecté pour 'Delete Message' : ${deleteMessageText}`);
 
-            // Vérifiez que la clé existe
-            if (intl.t?.MWMcg4) {
-                console.log(`[Plugin] Clé sélectionnée pour 'Delete Message' :`, intl.t.MWMcg4);
-
-                // Patcher le popup
-                const Popup = findByProps("show", "openLazy");
-                if (Popup) {
-                    unpatch = instead("show", Popup, (args, fn) => {
-                        // Vérifiez si le popup correspond à "Delete message"
-                        if (args?.[0]?.title === intl.t.MWMcg4) {
-                            console.log(`[Plugin] Interception du popup : Suppression automatique.`);
-                            args[0].onConfirm?.();
-                        } else {
-                            console.log("[Plugin] Autre popup détecté. Exécution par défaut.");
-                            return fn(...args);
-                        }
-                    });
+        // Patcher le popup
+        const Popup = findByProps("show", "openLazy");
+        if (Popup) {
+            unpatch = instead("show", Popup, (args, fn) => {
+                if (args?.[0]?.title === deleteMessageText) {
+                    console.log(`[Plugin] Interception du popup : Suppression automatique.`);
+                    args[0].onConfirm?.();
                 } else {
-                    console.error("[Plugin] Module Popup non trouvé !");
+                    console.log("[Plugin] Autre popup détecté. Exécution par défaut.");
+                    return fn(...args);
                 }
-            } else {
-                console.warn("[Plugin] La clé 'MWMcg4' n'existe pas dans intl.t !");
-            }
+            });
         } else {
-            console.error("[Plugin] Intl non trouvé !");
+            console.error("[Plugin] Module Popup non trouvé !");
         }
     },
     onUnload: () => {
