@@ -1,0 +1,1 @@
+(function(e,i,r){"use strict";let n;var d={onLoad:function(){const t=i.findByProps("openLazy","close");t&&(n=r.instead("openLazy",t,function(o,u){const a=o?.[0];a?.dialogKey==="alert-store-4"?a.onDismiss?.():u(...o)}))},onUnload:function(){return n?.()}};return e.default=d,Object.defineProperty(e,"__esModule",{value:!0}),e})({},vendetta.metro,vendetta.patcher);
