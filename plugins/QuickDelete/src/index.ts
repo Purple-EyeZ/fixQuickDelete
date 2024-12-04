@@ -1,8 +1,9 @@
-import { i18n } from "@vendetta/metro/common";
+import { findByProps } from "@vendetta/metro";
 
 export default {
     onLoad: () => {
-        console.log("[Plugin] i18n.Messages :", i18n.Messages);
+        const Intl = findByProps("intl");
+        console.log("[Plugin] Objet Intl :", Intl);
     },
     onUnload: () => {
         console.log("[Plugin] Déchargé.");
