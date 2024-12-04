@@ -5,13 +5,21 @@ export default {
         const intl = findByProps("intl");
         const runtimeHashMessageKey = findByProps("runtimeHashMessageKey");
 
-        console.log("[Plugin] intl :", intl);
-        console.log("[Plugin] runtimeHashMessageKey :", runtimeHashMessageKey);
-
         if (!intl || !runtimeHashMessageKey) {
-            console.error("[Plugin] Les modules nécessaires (intl ou runtimeHashMessageKey) sont introuvables !");
-        } else {
-            console.log("[Plugin] Les modules nécessaires sont disponibles.");
+            console.error("[Plugin] Les modules nécessaires sont introuvables !");
+            return;
+        }
+
+        const testKey = "Delete Message";
+        const hash = runtimeHashMessageKey(testKey);
+
+        console.log(`[Plugin] Hash pour '${testKey}' :`, hash);
+
+        try {
+            const message = intl.string(intl.t[hash]);
+            console.log(`[Plugin] Message récupéré pour '${testKey}' :`, message);
+        } catch (e) {
+            console.error("[Plugin] Erreur lors de la récupération du message :", e);
         }
     },
     onUnload: () => {},
