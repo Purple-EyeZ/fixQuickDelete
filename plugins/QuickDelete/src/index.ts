@@ -1,18 +1,16 @@
-import { findByProps, findByName } from "@vendetta/metro";
+import intlProxy from "../intlProxy";
 
 export default {
     onLoad: () => {
         try {
-            const intl = findByProps("intl");
-            console.log("[Plugin] intl contenu :", intl);
+            console.log("[Plugin] Test dynamique sur intlProxy...");
 
-            const messages = findByProps("Messages");
-            console.log("[Plugin] Messages disponibles :", Object.keys(messages || {}));
-
-            const allProps = findByProps("format", "locale");
-            console.log("[Plugin] Propriétés générales liées à la langue :", allProps);
+            // Parcourir dynamiquement les clés pour détecter ce qui est disponible
+            for (const key in intlProxy) {
+                console.log(`[Plugin] Clé trouvée : ${key}, Valeur :`, intlProxy[key]);
+            }
         } catch (e) {
-            console.error("[Plugin] Une erreur est survenue :", e);
+            console.error("[Plugin] Erreur lors du test sur intlProxy :", e);
         }
     },
     onUnload: () => {},
