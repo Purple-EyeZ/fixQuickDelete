@@ -1,17 +1,13 @@
-import intlProxy from "../intlProxy"; // Assurez-vous que le chemin est correct
+import { findByProps } from "@vendetta/metro";
 
 export default {
     onLoad: () => {
-        console.log("[Plugin] Début du test général de intlProxy...");
+        const i18n = findByProps("Messages");
 
-        // Tester une clé arbitraire
-        const testKey = "hello";
-        const testValue = intlProxy[testKey];
-
-        if (testValue) {
-            console.log(`[Plugin] Valeur pour la clé '${testKey}' :`, testValue);
+        if (i18n) {
+            console.log("[Plugin] i18n.Messages détectés :", Object.keys(i18n.Messages));
         } else {
-            console.error(`[Plugin] Aucune valeur trouvée pour la clé '${testKey}' dans intlProxy !`);
+            console.error("[Plugin] i18n.Messages est introuvable !");
         }
     },
     onUnload: () => {},
