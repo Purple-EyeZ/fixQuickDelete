@@ -7,7 +7,7 @@ const dictionary = [
 ];
 
 // Fonction pour générer des combinaisons.
-function generateCombinations(words, maxLength = 4) {
+function generateCombinations(words, maxLength = 10) {
     const combinations = [];
 
     // Fonction récursive pour créer les combinaisons
