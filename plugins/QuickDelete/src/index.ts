@@ -1,9 +1,22 @@
-import intlProxy from "../intlProxy";
+import { findByProps } from "@vendetta/metro";
+import intlProxy from "$/lib/intlProxy"; // Assurez-vous que l'importation est correcte
+import { instead } from "@vendetta/patcher";
 
-console.log("intlProxy.DELETE_MESSAGE:", intlProxy.DELETE_MESSAGE);
+let unpatch;
 
-if (intlProxy.DELETE_MESSAGE) {
-    console.log("intlProxy fonctionne : DELETE_MESSAGE =", intlProxy.DELETE_MESSAGE);
-} else {
-    console.warn("intlProxy ne fonctionne pas : DELETE_MESSAGE est undefined ou null");
-}
+export default {
+    onLoad: () => {
+        const Popup = findByProps("show", "openLazy"); // Recherche du composant `Popup`
+        if (Popup) {
+            unpatch = instead("show", Popup, (args, fn) => {
+                // Vérification si le titre correspond à la clé DELETE_MESSAGE
+                if (args?.[0]?.title === intlProxy.DELETE_MESSAGE) {
+                    args[0].onConfirm?.(); // Si c'est le cas, déclenche la confirmation
+                } else {
+                    fn(...args); // Sinon, laisse le comportement par défaut
+                }
+            });
+        }
+    },
+    onUnload: () => unpatch?.(),
+};
