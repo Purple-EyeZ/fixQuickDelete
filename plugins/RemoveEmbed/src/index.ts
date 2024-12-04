@@ -3,7 +3,7 @@ import intlProxy from "../intlProxy";
 // Liste de mots courants utilisés dans les clés (complète cette liste au besoin).
 const dictionary = [
     "DELETE", "MESSAGE", "EMBED", "REMOVE", "ADD", "EDIT", "USER", 
-    "ROLE", "ALL", "CONTENT", "TITLE", "NAME", "CHANNEL", "ALL"
+    "ROLE", "ALL", "CONTENT", "TITLE", "NAME", "CHANNEL", "ALL", "ARE", "YOU", "SURE"
 ];
 
 // Fonction pour générer des combinaisons.
