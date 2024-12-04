@@ -5,36 +5,50 @@ let unpatch;
 
 export default {
     onLoad: () => {
-        const Popup = findByProps("show", "openLazy");
-        const Intl = findByProps("intl");
+        const intl = findByProps("Messages");
 
-        if (!Popup || !Intl?.t) {
-            console.error("[Plugin] Impossible de trouver Popup ou Intl.");
-            return;
-        }
+        if (intl) {
+            console.log("[Plugin] Intl trouvé :", intl);
 
-        console.log("[Plugin] Popup et Intl trouvés :", Popup, Intl);
+            // Afficher uniquement les clés contenant "Delete"
+            const deleteKeys = Object.entries(intl.Messages)
+                .filter(([key, value]) => typeof value === "string" && value.toLowerCase().includes("delete"));
 
-        // Clé trouvée pour "Delete Message"
-        const deleteMessageKey = "xwMqDw";
-        const deleteMessageTitle = Intl.t?.[deleteMessageKey]?.()?.ast;
+            console.log("[Plugin] Clés contenant 'Delete' :", deleteKeys);
 
-        console.log(`[Plugin] Traduction associée à la clé "${deleteMessageKey}" :`, deleteMessageTitle);
+            // Trouver les clés exactes correspondant à "Delete Message"
+            const deleteMessageKeys = deleteKeys.filter(
+                ([key, value]) => value.toLowerCase() === "delete message"
+            );
 
-        unpatch = instead("show", Popup, (args, fn) => {
-            console.log("[Plugin] Popup.show intercepté avec les arguments :", args);
+            console.log("[Plugin] Clés correspondant à 'Delete Message' :", deleteMessageKeys);
 
-            if (args?.[0]?.title === deleteMessageTitle) {
-                console.log("[Plugin] Suppression de message détectée. Exécution de onConfirm.");
-                args[0].onConfirm?.();
+            if (deleteMessageKeys.length > 0) {
+                // On récupère la première clé correspondant à "Delete Message"
+                const [deleteKey] = deleteMessageKeys[0];
+                console.log(`[Plugin] Clé sélectionnée pour 'Delete Message' :`, deleteKey);
+
+                // Patcher le popup
+                const Popup = findByProps("show", "openLazy");
+                if (Popup) {
+                    unpatch = instead("show", Popup, (args, fn) => {
+                        if (args?.[0]?.title === intl.Messages[deleteKey]) {
+                            console.log(`[Plugin] Interception du popup : Suppression automatique.`);
+                            args[0].onConfirm?.();
+                        } else {
+                            console.log("[Plugin] Autre popup détecté. Exécution par défaut.");
+                            return fn(...args);
+                        }
+                    });
+                }
             } else {
-                console.log("[Plugin] Autre popup détecté. Exécution par défaut.");
-                fn(...args);
+                console.warn("[Plugin] Aucune clé exacte pour 'Delete Message' trouvée !");
             }
-        });
+        } else {
+            console.error("[Plugin] Intl non trouvé !");
+        }
     },
     onUnload: () => {
-        console.log("[Plugin] Déchargement...");
         unpatch?.();
     },
 };
