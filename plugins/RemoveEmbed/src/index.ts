@@ -3,11 +3,11 @@ import intlProxy from "../intlProxy";
 // Liste de mots courants utilisés dans les clés (complète cette liste au besoin).
 const dictionary = [
     "DELETE", "MESSAGE", "EMBED", "REMOVE", "ADD", "EDIT", "USER", 
-    "ROLE", "ALL", "CONTENT", "TITLE", "NAME", "CHANNEL", "ALL", "ARE", "YOU", "SURE"
+    "ROLE", "ALL", "CONTENT", "TITLE", "NAME", "CHANNEL", "ALL", "ARE", "YOU", "SURE", "THIS", "WILL", "EMBEDS", "ON", "THIS", "FOR", "EVERYONE"
 ];
 
 // Fonction pour générer des combinaisons.
-function generateCombinations(words, maxLength = 3) {
+function generateCombinations(words, maxLength = 4) {
     const combinations = [];
 
     // Fonction récursive pour créer les combinaisons
