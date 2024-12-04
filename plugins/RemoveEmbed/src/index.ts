@@ -1,9 +1,19 @@
 import intlProxy from "../intlProxy";
 
-console.log("intlProxy.DELETE_EMBED:", intlProxy.DELETE_EMBED);
+const prefixes = ["DELETE", "EDIT", "ADD", "MESSAGE", "USER", "ROLE"];
+const suffixes = ["MESSAGE", "EMBED", "ROLE", "NAME", "CONTENT", "TITLE"];
 
-if (intlProxy.DELETE_EMBED) {
-    console.log("intlProxy fonctionne : DELETE_EMBED =", intlProxy.DELETE_EMBED);
-} else {
-    console.warn("intlProxy ne fonctionne pas : DELETE_EMBED est undefined ou null");
-}
+const foundKeys = [];
+
+prefixes.forEach(prefix => {
+    suffixes.forEach(suffix => {
+        const key = `${prefix}_${suffix}`;
+        const value = intlProxy[key];
+        if (value && value !== "") {
+            console.log(`Found: ${key} = ${value}`);
+            foundKeys.push(key);
+        }
+    });
+});
+
+console.log("Discovered keys:", foundKeys);
