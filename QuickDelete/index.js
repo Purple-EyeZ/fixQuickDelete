@@ -1,1 +1,1 @@
-(function(n,e){"use strict";var o={onLoad:function(){console.log("[Plugin] i18n.Messages :",e.i18n.Messages)},onUnload:function(){console.log("[Plugin] D\xE9charg\xE9.")}};return n.default=o,Object.defineProperty(n,"__esModule",{value:!0}),n})({},vendetta.metro.common);
+(function(n,o){"use strict";var e={onLoad:function(){const t=o.findByProps("intl");console.log("[Plugin] Objet Intl :",t)},onUnload:function(){console.log("[Plugin] D\xE9charg\xE9.")}};return n.default=e,Object.defineProperty(n,"__esModule",{value:!0}),n})({},vendetta.metro);
