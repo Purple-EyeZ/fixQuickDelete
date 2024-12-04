@@ -1,3 +1,4 @@
+// Credits to @nexpid (source: https://github.com/nexpid/BunnyPlugins/blob/main/src/stuff/lib/intlProxy.ts)
 // a drop-in replacement for i18n
 // https://github.com/discord/discord-intl
 
