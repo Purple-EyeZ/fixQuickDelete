@@ -4,7 +4,7 @@ import { instead } from "@vendetta/patcher";
 let unpatch;
 export default {
     onLoad: () => {
-        const Alerts = findByProps("openLazy", "close"); // Recherche le gestionnaire de dialogues
+        const Alerts = findByProps("openLazy", "close");
         console.log("[Plugin] Alerts trouvé :", Alerts);
 
         if (Alerts) {
@@ -14,21 +14,22 @@ export default {
                 const dialog = args?.[0];
                 if (!dialog) {
                     console.warn("[Plugin] Aucun dialogue trouvé dans les arguments.");
-                    return fn(...args); // Exécute le comportement par défaut si aucun dialogue
+                    return fn(...args); // Exécute le comportement par défaut
                 }
 
                 console.log("[Plugin] Détails du dialogue intercepté :", dialog);
 
-                // Vérifie si c'est le dialogue "Remove All Embed"
-                if (dialog.dialogKey === "alert-store-4") {
-                    console.log("[Plugin] Dialogue 'Remove All Embed' détecté. Ajout de logique.");
-                    
-                    // Exemple de logique : fermer le dialogue ou appeler onDismiss
-                    dialog.onDismiss?.(); // Automatiquement fermer le dialogue
+                // Vérifions ce que fait la fonction importer
+                if (dialog.importer && typeof dialog.importer === "function") {
+                    console.log("[Plugin] Exécution de la fonction importer...");
+                    const importerResult = dialog.importer();
+                    console.log("[Plugin] Résultat de la fonction importer :", importerResult);
                 } else {
-                    console.log("[Plugin] Dialogue non reconnu, exécution par défaut.");
-                    fn(...args); // Comportement par défaut pour les autres dialogues
+                    console.warn("[Plugin] Aucun importer ou ce n'est pas une fonction.");
                 }
+
+                console.log("[Plugin] Dialogue non reconnu, exécution par défaut.");
+                return fn(...args); // Comportement par défaut
             });
         } else {
             console.error("[Plugin] Impossible de trouver le gestionnaire de dialogues (Alerts).");
