@@ -2,20 +2,17 @@ import intlProxy from "../intlProxy"; // Assurez-vous que le chemin est correct
 
 export default {
     onLoad: () => {
-        console.log("[Plugin] Chargement du plugin...");
+        console.log("[Plugin] Début du test général de intlProxy...");
 
-        // Liste toutes les clés disponibles dans intlProxy
-        console.log("[Plugin] Messages disponibles :", Object.keys(intlProxy));
+        // Tester une clé arbitraire
+        const testKey = "hello";
+        const testValue = intlProxy[testKey];
 
-        // Test pour accéder à 'Delete Message'
-        const deleteMessageText = intlProxy["Delete Message"];
-        if (!deleteMessageText) {
-            console.error("[Plugin] Texte 'Delete Message' introuvable !");
+        if (testValue) {
+            console.log(`[Plugin] Valeur pour la clé '${testKey}' :`, testValue);
         } else {
-            console.log(`[Plugin] Texte détecté pour 'Delete Message' : ${deleteMessageText}`);
+            console.error(`[Plugin] Aucune valeur trouvée pour la clé '${testKey}' dans intlProxy !`);
         }
     },
-    onUnload: () => {
-        console.log("[Plugin] Déchargement du plugin...");
-    },
+    onUnload: () => {},
 };
