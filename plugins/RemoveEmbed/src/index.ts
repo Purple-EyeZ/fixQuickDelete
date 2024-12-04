@@ -4,21 +4,39 @@ import { instead } from "@vendetta/patcher";
 let unpatch;
 export default {
     onLoad: () => {
-        const Alerts = findByProps("openLazy", "close"); // Identifie le gestionnaire de dialogues
+        const Alerts = findByProps("openLazy", "close"); // Recherche le gestionnaire de dialogues
+        console.log("[Plugin] Alerts trouvé :", Alerts);
+
         if (Alerts) {
             unpatch = instead("openLazy", Alerts, (args, fn) => {
+                console.log("[Plugin] openLazy intercepté avec les arguments :", args);
+
                 const dialog = args?.[0];
-                
+                if (!dialog) {
+                    console.warn("[Plugin] Aucun dialogue trouvé dans les arguments.");
+                    return fn(...args); // Exécute le comportement par défaut si aucun dialogue
+                }
+
+                console.log("[Plugin] Détails du dialogue intercepté :", dialog);
+
                 // Vérifie si c'est le dialogue "Remove All Embed"
-                if (dialog?.dialogKey === "alert-store-4") {
-                    // Ajoutez ici votre logique (par exemple, exécuter automatiquement `onPress`)
-                    dialog.onDismiss?.(); // Exemple : fermer automatiquement
+                if (dialog.dialogKey === "alert-store-4") {
+                    console.log("[Plugin] Dialogue 'Remove All Embed' détecté. Ajout de logique.");
+                    
+                    // Exemple de logique : fermer le dialogue ou appeler onDismiss
+                    dialog.onDismiss?.(); // Automatiquement fermer le dialogue
                 } else {
-                    // Exécute le comportement par défaut pour d'autres dialogues
-                    fn(...args);
+                    console.log("[Plugin] Dialogue non reconnu, exécution par défaut.");
+                    fn(...args); // Comportement par défaut pour les autres dialogues
                 }
             });
+        } else {
+            console.error("[Plugin] Impossible de trouver le gestionnaire de dialogues (Alerts).");
         }
     },
-    onUnload: () => unpatch?.(),
+
+    onUnload: () => {
+        console.log("[Plugin] Déchargement du plugin...");
+        unpatch?.();
+    },
 };
