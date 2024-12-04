@@ -5,34 +5,22 @@ let unpatch;
 
 export default {
     onLoad: () => {
-        const intl = findByProps("Messages");
+        // Trouver l'objet intl
+        const intl = findByProps("t");
 
         if (intl) {
             console.log("[Plugin] Intl trouvé :", intl);
 
-            // Afficher uniquement les clés contenant "Delete"
-            const deleteKeys = Object.entries(intl.Messages)
-                .filter(([key, value]) => typeof value === "string" && value.toLowerCase().includes("delete"));
-
-            console.log("[Plugin] Clés contenant 'Delete' :", deleteKeys);
-
-            // Trouver les clés exactes correspondant à "Delete Message"
-            const deleteMessageKeys = deleteKeys.filter(
-                ([key, value]) => value.toLowerCase() === "delete message"
-            );
-
-            console.log("[Plugin] Clés correspondant à 'Delete Message' :", deleteMessageKeys);
-
-            if (deleteMessageKeys.length > 0) {
-                // On récupère la première clé correspondant à "Delete Message"
-                const [deleteKey] = deleteMessageKeys[0];
-                console.log(`[Plugin] Clé sélectionnée pour 'Delete Message' :`, deleteKey);
+            // Vérifiez que la clé existe
+            if (intl.t?.MWMcg4) {
+                console.log(`[Plugin] Clé sélectionnée pour 'Delete Message' :`, intl.t.MWMcg4);
 
                 // Patcher le popup
                 const Popup = findByProps("show", "openLazy");
                 if (Popup) {
                     unpatch = instead("show", Popup, (args, fn) => {
-                        if (args?.[0]?.title === intl.Messages[deleteKey]) {
+                        // Vérifiez si le popup correspond à "Delete message"
+                        if (args?.[0]?.title === intl.t.MWMcg4) {
                             console.log(`[Plugin] Interception du popup : Suppression automatique.`);
                             args[0].onConfirm?.();
                         } else {
@@ -40,9 +28,11 @@ export default {
                             return fn(...args);
                         }
                     });
+                } else {
+                    console.error("[Plugin] Module Popup non trouvé !");
                 }
             } else {
-                console.warn("[Plugin] Aucune clé exacte pour 'Delete Message' trouvée !");
+                console.warn("[Plugin] La clé 'MWMcg4' n'existe pas dans intl.t !");
             }
         } else {
             console.error("[Plugin] Intl non trouvé !");
