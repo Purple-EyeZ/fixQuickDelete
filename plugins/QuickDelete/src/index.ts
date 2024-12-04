@@ -1,5 +1,5 @@
 import { findByProps } from "@vendetta/metro";
-import intlProxy from "$/lib/intlProxy"; // Assurez-vous que l'importation est correcte
+import intlProxy from "../intlProxy"; // Assurez-vous que l'importation est correcte
 import { instead } from "@vendetta/patcher";
 
 let unpatch;
