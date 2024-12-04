@@ -1,24 +1,21 @@
 import { findByProps } from "@vendetta/metro";
-import intlProxy from "../intlProxy"; // Assurez-vous que l'importation est correcte
+import intlProxy from "../intlProxy";
 import { instead } from "@vendetta/patcher";
 
 let unpatch;
 
 export default {
     onLoad: () => {
-        const Popup = findByProps("show", "openLazy"); // Recherche du composant `Popup`
-        if (Popup) {
-            unpatch = instead("show", Popup, (args, fn) => {
-                const titleKey = args?.[0]?.title;
+        const Popup = findByProps("show", "openLazy");
+        if (!Popup) return;
 
-                // Vérifie si le titre correspond à l'une des clés
-                if (titleKey === intlProxy.DELETE_MESSAGE || titleKey === intlProxy.SUPPRESS_EMBED_TITLE) {
-                    args[0].onConfirm?.(); // Déclenche toujours la confirmation
-                } else {
-                    fn(...args); // Sinon, comportement par défaut
-                }
-            });
-        }
+        unpatch = instead("show", Popup, (args, fn) => {
+            if ([intlProxy.DELETE_MESSAGE, intlProxy.SUPPRESS_EMBED_TITLE].includes(args?.[0]?.title)) {
+                args[0].onConfirm?.();
+            } else {
+                fn(...args);
+            }
+        });
     },
     onUnload: () => unpatch?.(),
 };
