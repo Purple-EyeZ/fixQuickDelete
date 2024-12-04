@@ -1,17 +1,9 @@
 import intlProxy from "../intlProxy";
 
-export default {
-    onLoad: () => {
-        try {
-            console.log("[Plugin] Test dynamique sur intlProxy...");
+console.log("intlProxy.GUILD_INVITE_CTA:", intlProxy.GUILD_INVITE_CTA);
 
-            // Parcourir dynamiquement les clés pour détecter ce qui est disponible
-            for (const key in intlProxy) {
-                console.log(`[Plugin] Clé trouvée : ${key}, Valeur :`, intlProxy[key]);
-            }
-        } catch (e) {
-            console.error("[Plugin] Erreur lors du test sur intlProxy :", e);
-        }
-    },
-    onUnload: () => {},
-};
+if (intlProxy.GUILD_INVITE_CTA) {
+    console.log("intlProxy fonctionne : GUILD_INVITE_CTA =", intlProxy.GUILD_INVITE_CTA);
+} else {
+    console.warn("intlProxy ne fonctionne pas : GUILD_INVITE_CTA est undefined ou null");
+}
