@@ -9,11 +9,13 @@ export default {
         const Popup = findByProps("show", "openLazy"); // Recherche du composant `Popup`
         if (Popup) {
             unpatch = instead("show", Popup, (args, fn) => {
-                // Vérification si le titre correspond à la clé DELETE_MESSAGE
-                if (args?.[0]?.title === intlProxy.SUPPRESS_EMBED_TITLE) {
-                    args[0].onConfirm?.(); // Si c'est le cas, déclenche la confirmation
+                const titleKey = args?.[0]?.title;
+
+                // Vérifie si le titre correspond à l'une des clés
+                if (titleKey === intlProxy.DELETE_MESSAGE || titleKey === intlProxy.SUPPRESS_EMBED_TITLE) {
+                    args[0].onConfirm?.(); // Déclenche toujours la confirmation
                 } else {
-                    fn(...args); // Sinon, laisse le comportement par défaut
+                    fn(...args); // Sinon, comportement par défaut
                 }
             });
         }
