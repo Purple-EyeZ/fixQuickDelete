@@ -1,4 +1,4 @@
-import intlProxy from "./intlProxy"; // Assurez-vous que le chemin est correct
+import intlProxy from "../intlProxy"; // Assurez-vous que le chemin est correct
 
 export default {
     onLoad: () => {
