@@ -1,0 +1,14 @@
+{
+    "name": "Remove Embed",
+    "description": "Remove the confirmation when deleting an Embed",
+    "authors": [
+        {
+            "name": "Embed Test",
+            "id": "406028027768733696"
+        }
+    ],
+    "main": "src/index.ts",
+    "vendetta": {
+        "icon": "ic_trash_24px"
+    }
+}
