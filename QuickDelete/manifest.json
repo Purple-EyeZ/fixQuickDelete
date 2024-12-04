@@ -1,1 +1,1 @@
-{"name":"FIXQuickDelete","description":"Remove the confirmation when deleting a message","authors":[{"name":"Fix Test","id":"406028027768733696"}],"main":"index.js","vendetta":{"icon":"ic_trash_24px"},"hash":"e364c247b1b5fb5243e26e5a2c7ee3b209b4e4163372ab4c72bccbc1b75a11e1"}
+{"name":"FIXQuickDelete","description":"Remove the confirmation when deleting a message","authors":[{"name":"Fix Test","id":"406028027768733696"}],"main":"index.js","vendetta":{"icon":"ic_trash_24px"},"hash":"a3c2018cb191979eee6025e7f75719440feccbf6634f66ca0f0741d54d9203bb"}
