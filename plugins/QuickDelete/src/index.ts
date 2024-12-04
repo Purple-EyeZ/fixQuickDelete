@@ -1,5 +1,5 @@
 import { findByProps } from "@vendetta/metro";
-import { i18n } from "@metro/common"; // Import des traductions
+import { i18n } from "@vendetta/metro/common"; // Import des traductions
 import { instead } from "@vendetta/patcher";
 
 let unpatch;
