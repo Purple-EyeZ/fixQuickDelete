@@ -25,6 +25,9 @@ export default function patchSettings() {
             return;
         }
 
+        // Journalisation de toute l'arborescence
+        console.log("[PinSettings] UserSettingsOverviewWrapper render tree:", ret.props.children);
+
         // Cherche l'objet UserSettingsOverview
         const Overview = findInReactTree(ret.props.children, (i) => i.type?.name === "UserSettingsOverview");
         if (!Overview) {
