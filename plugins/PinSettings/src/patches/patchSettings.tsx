@@ -6,6 +6,7 @@ import { Forms } from "@vendetta/ui/components";
 import SettingsSection from "../components/SettingsSection";
 
 const settingsModule = findByName("UserSettingsOverviewWrapper", false);
+console.log("[PinSettings] Found settingsModule:", settingsModule);
 
 export default function patchSettings() {
     if (!settingsModule) {
@@ -14,8 +15,11 @@ export default function patchSettings() {
     }
 
     const patches: (() => void)[] = [];
+    console.log("[PinSettings] Patching UserSettingsOverviewWrapper...");
 
     const unpatch = after("default", settingsModule, (_, ret) => {
+        console.log("[PinSettings] Inside after hook for UserSettingsOverviewWrapper, result:", ret);
+
         const Overview = findInReactTree(ret.props.children, (i) => i.type?.name === "UserSettingsOverview");
         if (!Overview) {
             console.error("[PinSettings] Failed to find UserSettingsOverview");
@@ -26,7 +30,9 @@ export default function patchSettings() {
 
         patches.push(
             after("render", Overview.type.prototype, (_, renderRet) => {
-                // Trouver les enfants de settings
+                console.log("[PinSettings] Inside render hook for UserSettingsOverview, result:", renderRet);
+
+                // Trouver les enfants des settings
                 const settingsChildren = findInReactTree(
                     renderRet.props.children,
                     (tree) => tree?.children?.[1]?.type === Forms.FormSection
@@ -44,18 +50,23 @@ export default function patchSettings() {
                     intlProxy.BILLING_SETTINGS,
                     intlProxy.PREMIUM_SETTINGS,
                 ];
+                console.log("[PinSettings] Settings titles for injection:", titles);
 
                 const index = settingsChildren.findIndex((c: any) => titles.includes(c?.props?.label));
                 console.log("[PinSettings] Injecting at index:", index);
 
                 // Injecter la section custom
                 settingsChildren.splice(index === -1 ? 4 : index, 0, <SettingsSection />);
+                console.log("[PinSettings] SettingsSection successfully injected.");
             })
         );
 
-        // Unpatch après la première exécution
+        console.log("[PinSettings] Unpatching UserSettingsOverviewWrapper...");
         unpatch();
     });
 
-    return () => patches.forEach((p) => p());
+    return () => {
+        console.log("[PinSettings] Cleaning up patches...");
+        patches.forEach((p) => p());
+    };
 }
