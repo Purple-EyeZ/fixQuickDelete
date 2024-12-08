@@ -18,21 +18,34 @@ export default function patchSettings() {
     console.log("[PinSettings] Patching UserSettingsOverviewWrapper...");
 
     const unpatch = after("default", settingsModule, (_, ret) => {
-        console.log("[PinSettings] Inside after hook for UserSettingsOverviewWrapper, result:", ret);
+        console.log("[PinSettings] Inside after hook for UserSettingsOverviewWrapper. Result:", ret);
 
+        if (!ret || !ret.props || !ret.props.children) {
+            console.error("[PinSettings] Unexpected structure in settingsModule render:", ret);
+            return;
+        }
+
+        // Cherche l'objet UserSettingsOverview
         const Overview = findInReactTree(ret.props.children, (i) => i.type?.name === "UserSettingsOverview");
         if (!Overview) {
-            console.error("[PinSettings] Failed to find UserSettingsOverview");
+            console.error("[PinSettings] Failed to find UserSettingsOverview in settingsModule:");
+            console.log("[PinSettings] settingsModule render tree:", ret.props.children);
             return;
         }
 
         console.log("[PinSettings] Found UserSettingsOverview:", Overview);
 
+        // Ajout du patch de rendu
         patches.push(
             after("render", Overview.type.prototype, (_, renderRet) => {
                 console.log("[PinSettings] Inside render hook for UserSettingsOverview, result:", renderRet);
 
-                // Trouver les enfants des settings
+                if (!renderRet?.props?.children) {
+                    console.error("[PinSettings] Unexpected structure in render result:", renderRet);
+                    return;
+                }
+
+                // Trouver les enfants des paramètres
                 const settingsChildren = findInReactTree(
                     renderRet.props.children,
                     (tree) => tree?.children?.[1]?.type === Forms.FormSection
@@ -45,7 +58,7 @@ export default function patchSettings() {
 
                 console.log("[PinSettings] Found settings children:", settingsChildren);
 
-                // Trouver l'index où injecter la nouvelle section
+                // Trouver l'index où injecter
                 const titles = [
                     intlProxy.BILLING_SETTINGS,
                     intlProxy.PREMIUM_SETTINGS,
@@ -64,6 +77,8 @@ export default function patchSettings() {
         console.log("[PinSettings] Unpatching UserSettingsOverviewWrapper...");
         unpatch();
     });
+
+    console.log("[PinSettings] Patch applied to UserSettingsOverviewWrapper.");
 
     return () => {
         console.log("[PinSettings] Cleaning up patches...");
