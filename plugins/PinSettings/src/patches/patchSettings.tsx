@@ -6,7 +6,6 @@ import { Forms } from "@vendetta/ui/components";
 import SettingsSection from "../components/SettingsSection";
 
 const settingsModule = findByName("UserSettingsOverviewWrapper", false);
-console.log("[PinSettings] UserSettingsOverviewWrapper:", settingsModule);
 
 export default function patchSettings() {
     if (!settingsModule) {
@@ -14,10 +13,10 @@ export default function patchSettings() {
         return () => {};
     }
 
-    const patches = new Array<Function>;
+    const patches: (() => void)[] = [];
 
     const unpatch = after("default", settingsModule, (_, ret) => {
-        const Overview = findInReactTree(ret.props.children, i => i.type && i.type.name === "UserSettingsOverview");
+        const Overview = findInReactTree(ret.props.children, (i) => i.type?.name === "UserSettingsOverview");
         if (!Overview) {
             console.error("[PinSettings] Failed to find UserSettingsOverview");
             return;
@@ -25,31 +24,38 @@ export default function patchSettings() {
 
         console.log("[PinSettings] Found UserSettingsOverview:", Overview);
 
-        patches.push(after("render", Overview.type.prototype, (_, { props: { children } }) => {
-            const titles = [
-                intlProxy.BILLING_SETTINGS,
-                intlProxy.PREMIUM_SETTINGS,
-            ];
+        patches.push(
+            after("render", Overview.type.prototype, (_, renderRet) => {
+                // Trouver les enfants de settings
+                const settingsChildren = findInReactTree(
+                    renderRet.props.children,
+                    (tree) => tree?.children?.[1]?.type === Forms.FormSection
+                )?.children;
 
-            console.log("[PinSettings] Settings titles for injection:", titles);
+                if (!settingsChildren) {
+                    console.error("[PinSettings] Failed to find settings children");
+                    return;
+                }
 
-            children = findInReactTree(children, (tree) => tree.children[1].type === Forms.FormSection)?.children;
+                console.log("[PinSettings] Found settings children:", settingsChildren);
 
-            if (!children) {
-                console.error("[PinSettings] Failed to find settings children");
-                return;
-            }
+                // Trouver l'index où injecter la nouvelle section
+                const titles = [
+                    intlProxy.BILLING_SETTINGS,
+                    intlProxy.PREMIUM_SETTINGS,
+                ];
 
-            console.log("[PinSettings] Found settings children:", children);
+                const index = settingsChildren.findIndex((c: any) => titles.includes(c?.props?.label));
+                console.log("[PinSettings] Injecting at index:", index);
 
-            const index = children.findIndex((c: any) => titles.includes(c?.props.label));
-            console.log("[PinSettings] Injecting at index:", index);
+                // Injecter la section custom
+                settingsChildren.splice(index === -1 ? 4 : index, 0, <SettingsSection />);
+            })
+        );
 
-            children.splice(index === -1 ? 4 : index, 0, <SettingsSection />);
-        }));
-
+        // Unpatch après la première exécution
         unpatch();
     });
 
-    return () => patches.forEach(p => p());
+    return () => patches.forEach((p) => p());
 }
